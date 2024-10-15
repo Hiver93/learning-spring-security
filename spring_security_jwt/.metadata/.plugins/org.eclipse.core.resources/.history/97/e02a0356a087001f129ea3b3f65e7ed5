@@ -1,0 +1,5 @@
+package com.kdw.jwt.dto;
+
+public class CustomUserDetails {
+
+}

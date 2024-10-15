@@ -1,0 +1,5 @@
+package com.kdw.jwt.repository;
+
+public class RefreshRepository {
+
+}

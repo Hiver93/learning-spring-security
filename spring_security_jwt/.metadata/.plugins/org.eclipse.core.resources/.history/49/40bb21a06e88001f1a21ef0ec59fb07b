@@ -1,0 +1,34 @@
+package com.kdw.jwt.jwt;
+
+import java.io.IOException;
+
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class JWTFilter extends OncePerRequestFilter{
+	
+	private final JWTUtil jwtUtil;
+	
+	public JWTFilter(JWTUtil jwtUtil) {
+		this.jwtUtil = jwtUtil;
+	}
+
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+		String authorization = request.getHeader("Authorization");
+		
+		// 헤더검증
+		if(authorization == null || !authorization.startsWith("Bearer")) {
+			System.out.println("token null");
+			filterChain.doFilter(request, response);
+		}
+		
+		String token = authorization.split(" ")[1];
+	}
+
+}

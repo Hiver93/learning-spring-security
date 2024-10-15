@@ -1,0 +1,11 @@
+<html>
+	<body>
+		login page
+		<hr>
+		<form action="/joinProc" method="post" name="joinForm">
+			<input id="username" type="text" name="username" placeholder="id"/>
+			<input id="password" type="password" name="password" placeholder="password"/>
+			<input type="submit" value="login"/>
+		</form>
+	</body>
+</html>

@@ -1,0 +1,10 @@
+package com.kdw.jwt.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.kdw.jwt.entity.UserEntity;
+
+public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+
+	Boolean exiexistsByUsername(String username); 
+}

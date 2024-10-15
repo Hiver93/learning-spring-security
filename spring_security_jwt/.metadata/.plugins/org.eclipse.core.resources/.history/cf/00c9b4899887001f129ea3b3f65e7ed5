@@ -1,0 +1,13 @@
+package com.kdw.jwt.service;
+
+import org.springframework.stereotype.Service;
+
+import com.kdw.jwt.dto.JoinDto;
+
+@Service
+public class JoinService {
+
+	public void joinProcess(JoinDto joinDto) {
+		
+	}
+}

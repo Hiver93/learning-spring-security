@@ -1,0 +1,17 @@
+package com.kdw.jwt.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kdw.jwt.dto.JoinDto;
+
+@Controller
+@ResponseBody
+public class JoinController {
+
+	@PostMapping("/join")
+	public String joinProcess(JoinDto joinDto) {
+		return "ok";
+	}
+}

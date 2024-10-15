@@ -1,0 +1,19 @@
+package com.kdw.jwt.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kdw.jwt.dto.JoinDto;
+import com.kdw.jwt.repository.UserRepository;
+
+@Service
+public class JoinService {
+
+	@Autowired
+	private final UserRepository userRepository;
+	
+	public void joinProcess(JoinDto joinDto) {
+		String username = joinDto.getUsername();
+		String password = joinDto.getPassword();
+	}
+}

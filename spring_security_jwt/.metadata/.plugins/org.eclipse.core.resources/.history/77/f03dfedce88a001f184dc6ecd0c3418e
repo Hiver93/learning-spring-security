@@ -1,0 +1,38 @@
+package com.kdw.jwt.jwt;
+
+import java.io.IOException;
+
+import org.springframework.web.filter.GenericFilterBean;
+
+import com.kdw.jwt.repository.RefreshRepository;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class CustomLogoutFilter extends GenericFilterBean {
+
+	private final JWTUtil jwtUtil;
+	private final RefreshRepository refreshRepository;
+	
+	public CustomLogoutFilter(JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+		this.jwtUtil = jwtUtil;
+		this.refreshRepository = refreshRepository;
+	}
+	
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		doFilter((HttpServletRequest)request, (HttpServletResponse)response, chain);
+		
+	}
+	
+	private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
+		
+		String requestUrl;
+	}
+
+}

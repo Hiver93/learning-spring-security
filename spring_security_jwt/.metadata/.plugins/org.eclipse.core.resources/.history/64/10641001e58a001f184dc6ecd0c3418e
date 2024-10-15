@@ -1,0 +1,12 @@
+package com.kdw.jwt.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.kdw.jwt.entity.RefreshEntity;
+
+public interface RefreshRepository extends JpaRepository<RefreshEntity, Long>{
+	
+	Boolean existsByRefresh(String refresh);
+	
+	void deleteByRefresh(String refresh);
+}

@@ -1,0 +1,9 @@
+package com.kdw.jwt.controller;
+
+import org.springframework.stereotype.Controller;
+
+@Controller
+@ResponseBOdy
+public class JoinController {
+
+}
