@@ -34,7 +34,7 @@ import com.kdw.security.internal.filter.CustomOnceFilter;
 
 
 @Configuration
-@EnableWebSecurity(debug = true) // debug모드를 true로 하면 필터체인의 어떤 필터를 거쳐 요청이 지나가는지 출력해줌
+@EnableWebSecurity(debug = false) // debug모드를 true로 하면 필터체인의 어떤 필터를 거쳐 요청이 지나가는지 출력해줌
 public class SecurityConfig {
 
 	
@@ -120,6 +120,21 @@ public class SecurityConfig {
 		http
 			.addFilterAfter(new CustomOnceFilter(), LogoutFilter.class);
 		
+		return http.build();
+	}
+	
+	@Bean
+	@Order(3)
+	public SecurityFilterChain filterChain4(HttpSecurity http) throws Exception{
+
+		http
+			.securityMatchers((auth)->auth
+					.requestMatchers("/async"));
+		
+		http
+			.authorizeHttpRequests(auth-> auth
+					.anyRequest().permitAll());
+	
 		return http.build();
 	}
 	
