@@ -8,6 +8,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.session.DisableEncodeUrlFilter;
+
+import com.kdw.security.internal.filter.CustomGenericFilter;
+import com.kdw.security.internal.filter.CustomOnceFilter;
 
 // 필터 간단 개요 (위의 네가지는 필수적으로 필요)
 // DisableEncodeUrlFilter URL로 간주되지 않느 부분을 포함하지 않도록 설정
@@ -80,8 +85,6 @@ public class SecurityConfig {
 //			.addFilterAt(추가할 필터,기존필터.class);
 //		http
 //			.addFilterAfter(추가할 필터,기존필터.class);
-		
-		
 		return http.build();
 	}
 	
@@ -96,6 +99,27 @@ public class SecurityConfig {
 		http
 		.authorizeHttpRequests(auth-> auth
 				.requestMatchers("/admin").permitAll());
+		return http.build();
+	}
+	
+	@Bean
+	@Order(3)
+	public SecurityFilterChain filterChain3(HttpSecurity http) throws Exception{
+
+		http
+			.securityMatchers((auth)->auth
+					.requestMatchers("/filterafter", "/filterbefore"));
+		
+		http
+			.authorizeHttpRequests(auth-> auth
+					.anyRequest().permitAll());
+		
+		http
+			.addFilterAfter(new CustomGenericFilter(), LogoutFilter.class);
+		
+		http
+			.addFilterAfter(new CustomOnceFilter(), LogoutFilter.class);
+		
 		return http.build();
 	}
 	
