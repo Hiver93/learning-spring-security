@@ -1,0 +1,88 @@
+필터 상속과 요청 전파
+
+하나의 필터에는 
+인터페이스
+제네릭필터빈추상클래스
+구현1
+구현2(필터로 등록)
+
+onceperrequestfiler의 경우도 있고 genericfilterbean의 경우도 있다.
+
+상속의 이점
+중복되는 코드를 줄이고 각각의 구현부가 자신의 책임에 대해서만 작업을 수행하면 된다.
+
+모든 필터는 generic 또는 onceper를 상속해서 구현한다.
+
+OncePer는 한번의 요청에 대해 동일한 필터를 탈 거칠 경우 한 번만 반응하도록 설계되어 있다.
+
+Filter 인터페이스는
+
+init
+서블릿 컨테이너 실행시 필터를 생성하고 초기화
+dofilter
+요청에 대한 작업 수행 및 다음 필터를 호출하는 메소드
+destroy
+서블릿 컨테이너 종료시 초기화하는 메소드
+
+dofilter 의 앞뒤로 before after가 실행
+
+generic 은 dofilter
+oncePer 는 dofilterinternal
+
+
+
+
+GenericFilterBean OncePerRequestFilter
+
+둘다 필터를 만들기 위한 추상클래스이지만 차이가 있다.
+
+기준은 클라이언트의 한 번의 요청에 대해서이다.
+Generic은 내부적으로 동일한 필터를 여러번 통과하면 통과한 수 만큼 내부 로직이 실행
+OncePer는 동일한 필터를 통과하더라도 첫 한 번만 내부 로직 실행
+
+대부분 블로그가 잘못적은 내용
+redirect(302)상태에서 OncePer가 한번동작한다고 되어있지만
+재요청의 경우 요청이 두번 보내지기 때문에 두번 동작을 한다.
+redirect 시에는 해당이 안되고 forwad 상태만 해당이 된다.
+
+forward는 서버 내부에서 forwad를 진행한다.
+redirect는 a컨트롤러에서 b로 리다이렉트 응답이 가고 클라이언트에서 다시 요청
+
+
+
+
+
+DisableEncodeUrlFIlter
+DefaultSecurityFilterChain에 기본적으로 등록되며 가장 첫번째에 위치한다.
+
+url파라미터를 계속 들고다니는데 url파라미터에 세션id가 인코딩되어 로그로 유출되는 것을 방지하기 위함이다.
+onceper이다
+
+response를 DisableEncodeUrlResponseWrapper로 감싸서 넘긴다.
+이를 통해 정보 유출을 막을 수 있다.
+
+기존에 세션id를 같이 인코딩하던 것과 달리 url만 반환한다.
+
+
+
+
+WebAsyncManagerIntegrationFIlter
+서블릿단인 컨트롤러에서 비동기 작업을 수행할 때 서블릿 입출력 쓰레드와 작업 쓰레드를 나누는데
+이떄 SecurityContextHolder의 SecurityContext 영역을 참조할 수 있도록 도와준다.
+
+즉, SecurityContextHolder의 ThreadLocal 전략에 따라 동일한 쓰레드에서만 SecurityContext에 접근할 수 있는데,
+비동기 방식의 callable을 쓰면 하나의 작업을 2개의 스레드로 수행하기 때문에 위배되는데 이부분을 이 필터에서 보완
+
+실제로 수행하는 작업은 callable 동작 방식에 관련이 있다.
+
+필터는
+현재 스레드의 securitycontext를 다룰 수 있는 interceptor를 webasyncmanager에 등록만 한다.
+
+실제로 꺼내 쓰는건 dispatcherservlet에서 쓴다
+dispatcherservlet은 요청을 컨트롤러에 분담하고 다시 사용자에게 응답
+
+dispatcher에서 분담하고 callable을 webasyncmanager에 전달하고 manager에서 관리하던 핸들에 작업을 전달하여 실행
+
+따라서 따로 시큐리티 설정을 하지않아도 callable을 알아서 잘 적용
+
+async 어노테이션을 붙이는 것은 이것과 달리 다른 방식으로 사용된다.

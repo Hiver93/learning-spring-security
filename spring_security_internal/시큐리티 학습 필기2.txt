@@ -1,0 +1,41 @@
+시큐리티 필터 체인은 여러가지 특정 작업을 수행함
+
+커스텀하면 디폴트값이 없어지고 커스텀한 것이 등록
+
+필터체인에 대한 request를 따로 적용해주어야 함
+
+
+필터체인 프록시에서 가로채서 관련 bean에서 처리하도록한다.
+필터는 시작점이라고 볼 수 있다.
+
+enable web security 어노테이션에 debug를 트루로 하면 더 쉽게 디버그 가능
+
+
+상태 저장
+작업에 관한 결과를 서로 알아야 다음 필터에서 처리가 가능하다.
+예를 들어, 인가 필터가 작업하려면 유저의 ROLE 정보가 필요한데, 앞단에서 ROLE을 공유하지 않으면 처리가 힘들다.
+
+SecurityContextHolder 내부에 
+Authentication 객체에 해당 정보들을 저장한다. (아이디, 로그인 여부 ROLE 데이터가 담긴다)
+Security 컨텍스트 안에 관리 되고 Context는 유저 정보당 하나씩 생성된다. Context는 SecurityContextHolder에 의해서 관리된다.
+
+pricipal: 유저에 대한 정보
+Credentials : 증명(비밀번호, 토큰)
+Authorities : 유저의 권한(ROLE) 목록
+
+접근 
+SecurityCOntextHolder.getContext().getAuthentication().getAuthorities();
+
+context 관리는 다른 클래스에 맡긴다. (strategy)
+사용자 별로 다른 저장소를 제공해야 인증 정보가 겹치는 일이 발생하지 않기 떄문에
+
+SecurityCOntextHolder의 실제 등록, 초기화, 읽기 등의 작업은 SecurityContextHolderStrategy에게 맡긴다
+기본적으로 threadLocal
+
+
+
+접근 스레드 별 securityContext 배분
+톰캣 was는 멀티 스레드고, 유저가 접속하면 유저에게 하나의 스레드 할당
+각강의 유저는 동시에 시큐리티 로직을 사용할 수 있다.
+
+static이라 덮어씌어질 것으로 생각할 수 있지만 threadLocal로 관리되기 때문에 스레드 별로 다른 구획을 나눠 제공한다.
